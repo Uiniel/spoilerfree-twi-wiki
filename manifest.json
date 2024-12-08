@@ -1,0 +1,16 @@
+{
+  "manifest_version": 2,
+  "name": "Spoiler-free Wandering Inn Wiki",
+  "version": "1.0",
+  "description": "Redirects wiki pages to a version older than the selected chapter",
+
+  "permissions": [
+    "webRequest",
+    "webRequestBlocking",
+    "https://wiki.wanderinginn.com/"
+  ],
+
+  "background": {
+    "scripts": ["background.js"]
+  }
+}
