@@ -1,6 +1,19 @@
 const targetPage = "https://wiki.wanderinginn.com/*";
 
-const currentChapterDate = new Date(2020, 1, 19); // Chapter 7.00 example
+let currentChapterDate = new Date(2020, 1, 19); // Chapter 7.00 example
+let enabled = true;
+console.log("Background loaded")
+
+browser.runtime.onMessage.addListener((message) => {
+    console.log(message);
+    if (message.type === "enabled") {
+        enabled = true;
+    } else if (message.type === "disabled") {
+        enabled = false;
+    } else if (message.type === "date") {
+        currentChapterDate = new Date(message.date_string);
+    }
+});
 
 function findOldPage(url_path) {
     return new Promise(function (resolve, reject) {
@@ -41,6 +54,11 @@ function findOldPage(url_path) {
 }
 
 function redirectToOldPage(e) {
+    console.log(currentChapterDate)
+    if (!enabled) {
+        return;
+    }
+
     const url = new URL(e.url);
     const url_path = url.pathname;
 
