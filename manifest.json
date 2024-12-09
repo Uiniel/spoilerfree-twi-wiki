@@ -1,16 +1,17 @@
 {
-  "manifest_version": 2,
-  "name": "Spoiler-free Wandering Inn Wiki",
+  "manifest_version": 3,
+  "name": "Spoiler-free TWI Wiki",
   "version": "1.0",
   "description": "Redirects wiki pages to a version older than the selected chapter",
-
+  "host_permissions": [
+    "https://wiki.wanderinginn.com/*"
+  ],
   "permissions": [
     "webRequest",
     "webRequestBlocking",
-    "storage",
-    "https://wiki.wanderinginn.com/"
+    "storage"
   ],
-  "browser_action": {
+  "action": {
     "default_icon": "icons/icon-32.png",
     "default_title": "Spoiler-free TWI Wiki",
     "default_popup": "popup/chapter_selection.html"
