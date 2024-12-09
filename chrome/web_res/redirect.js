@@ -1,23 +1,6 @@
-const targetPage = "https://wiki.wanderinginn.com/*";
+let currentChapterDate = new Date((await chrome.storage.local.get("date")).date ?? "2017/3/3");
 
-let currentChapterDate = new Date(2017, 3, 3);
-let enabled = true;
-browser.storage.local.get(["date", "enabled"]).then(data => {
-    currentChapterDate = new Date(data.date);
-    enabled = data.enabled;
-});
-
-browser.runtime.onMessage.addListener((message) => {
-    console.log(message);
-    if (message.type === "enabled") {
-        enabled = true;
-    } else if (message.type === "disabled") {
-        enabled = false;
-    } else if (message.type === "date") {
-        currentChapterDate = new Date(message.date_string);
-    }
-});
-
+// TODO: share function between chrome and firefox implementation
 function findOldPage(url_path) {
     return new Promise(function (resolve, reject) {
         const url = "https://wiki.wanderinginn.com/history" + url_path + "?offset=&limit=1&date-range-to="
@@ -56,24 +39,15 @@ function findOldPage(url_path) {
     });
 }
 
-function redirectToOldPage(e) {
-    console.log(currentChapterDate);
-    if (!enabled) {
-        return;
-    }
 
-    const url = new URL(e.url);
-    const url_path = url.pathname;
+const params = new URLSearchParams(window.location.search);
 
-    if (url_path === "/" || url_path.startsWith("/index.php") || url_path.startsWith("/history") || url.hash.includes("/media")) {
-        console.log("Special page: " + e.url); // TODO: remove
-        return;
-    }
-    return findOldPage(url_path);
+if (params.has("path")) {
+    const path = "/"+params.get("path");
+    findOldPage(path).then(redirect => {
+        console.log(redirect.redirectUrl)
+        window.location = redirect.redirectUrl;
+    });
+} else {
+    document.getElementById("text").innerText = "Error: missing parameter"
 }
-
-browser.webRequest.onBeforeRequest.addListener(
-    redirectToOldPage,
-    {urls: [targetPage], types: ["main_frame"]},
-    ["blocking"]
-);
