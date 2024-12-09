@@ -2,6 +2,8 @@ html {
     color: white;
     background-color: #0e0f13;
     text-align: center;
+    user-select: none;
+    font-family: "Roboto", sans-serif;
 }
 
 body {
@@ -11,7 +13,20 @@ body {
 form {
     display: flex;
     flex-direction: column;
-    height: 500px;
+    height: 35rem;
+    width: 28rem;
+}
+
+.header {
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+    padding-top: 0.25em;
+    font-size: 14pt;
+}
+
+.header > div {
+    margin-top: 0.25em;
+    margin-bottom: 0.25em;
 }
 
 .chapter-selection {
@@ -20,20 +35,30 @@ form {
 }
 
 details {
-    margin-bottom: 0.5em;
+    margin-top: 0.5rem;
+}
+
+details:first-child {
+    margin-top: 0;
 }
 
 summary {
     position: sticky;
     top: 0;
     background-color: #171c26;
-    padding: 1em;
+    padding: 0.5em;
+    font-size: 14pt;
+    cursor: pointer;
+    z-index: 1; /* The > current chapter indicator is above this otherwise??? */
 }
 
 .chapter {
     padding: 0.5em;
     display: block;
     color: #f7a71b;
+    font-size: 12pt;
+    cursor: pointer;
+    font-family: "Roboto Mono", monospace;
 }
 
 .chapter:nth-child(2n) {
@@ -67,5 +92,60 @@ input[type="radio"]::before {
 input[type="radio"]:checked::before {
     transition-timing-function: ease-in;
     transform: scaleX(100%);
-    width: 1em;
+    width: 1rem;
+}
+
+.switch {
+    display: inline-block;
+    width: 2em;
+    height: 2ex;
+    background-color: #262e40;
+    box-sizing: border-box;
+    position: relative;
+    border-radius: 1.5ex;
+    transition-property: background-color;
+    transition-timing-function: ease-in-out;
+    transition-duration: 120ms;
+    cursor: pointer;
+}
+
+.switch:has(input:checked) {
+    background-color: #f7a71b;
+}
+
+.switch input {
+    display: none;
+}
+
+.switch .slider {
+    display: inline-block;
+    position: absolute;
+    border-radius: 50%;
+    height: 1.5ex;
+    width: 1.5ex;
+    background-color: white;
+    top: 50%;
+    left: 1ex;
+    transform: translate(-50%, -50%);
+    transition-property: left;
+    transition-timing-function: ease-in-out;
+    transition-duration: 120ms;
+}
+
+input:checked + .slider {
+    left: calc(100% - 1ex);
+}
+
+#enabled-text {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+#enabled-text > span {
+    width: 10.7em;
+}
+
+#selected-date {
+    user-select: text;
 }

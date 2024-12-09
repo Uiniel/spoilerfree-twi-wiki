@@ -1,7 +1,7 @@
 const targetPage = "https://wiki.wanderinginn.com/*";
 
 let currentChapterDate = new Date(2017, 3, 3);
-let enabled = false;
+let enabled = true;
 browser.storage.local.get(["date", "enabled"]).then(data => {
     currentChapterDate = data.date;
     enabled = data.enabled;

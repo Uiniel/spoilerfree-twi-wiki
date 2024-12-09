@@ -8,9 +8,11 @@
 <body>
 <form>
     <div class="header">
-        <div><label for="enabled">Wiki Redirects Enabled<input type="checkbox" name="enabled" id="enabled"></label>
+        <div id="enabled-text">
+            <span>Wiki Redirects Enabled</span>
+            <label for="enabled" class="switch" title="Toggle Wiki Redirects"><input type="checkbox" name="enabled" id="enabled"><span class="slider"></span></label>
         </div>
-        <div>Hiding wiki pages published before: <span id="selected-date"></span></div>
+        <div>Hiding wiki pages published before: <br><div id="selected-date"></div></div>
         <div>Select your current chapter:</div>
     </div>
     <div class="chapter-selection">
