@@ -4,7 +4,7 @@ let currentChapterDate = new Date((await chrome.storage.local.get("date")).date 
 function findOldPage(url_path) {
     return new Promise(function (resolve, reject) {
         const url = "https://wiki.wanderinginn.com/history" + url_path + "?offset=&limit=1&date-range-to="
-            + currentChapterDate.getUTCFullYear() + "-" + currentChapterDate.getUTCMonth() + "-" + currentChapterDate.getUTCDay();
+            + currentChapterDate.getUTCFullYear() + "-" + (currentChapterDate.getUTCMonth() + 1) + "-" + currentChapterDate.getUTCDate();
 
         let req = new XMLHttpRequest();
         req.open("GET", url);
