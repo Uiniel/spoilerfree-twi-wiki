@@ -6,7 +6,7 @@ import requests
 
 
 def download_table_of_contents(path):
-    user_agent = {'User-agent': 'Mozilla/5.0'}
+    user_agent = {'User-agent': 'Spoiler-free TWI Wiki (https://github.com/Uiniel/spoilerfree-twi-wiki)'}
     request = requests.get("https://wanderinginn.com/table-of-contents/", headers=user_agent)
     request.raise_for_status()
 
