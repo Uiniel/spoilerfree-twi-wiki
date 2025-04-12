@@ -1,6 +1,6 @@
+import json
 from bs4 import BeautifulSoup
 import re
-from jinja2 import Environment, FileSystemLoader
 import os
 import requests
 
@@ -45,34 +45,18 @@ def parse_html(html):
     return volumes
 
 
-def generate_html(volumes, path):
-    env = Environment(loader=FileSystemLoader("templates"), autoescape=True)
-    template = env.get_template("popup.html")
-    output = template.render(volumes=volumes)
-
-    filename = os.path.join(path, "extension/popup/chapter_selection.html")
-    os.makedirs(os.path.dirname(filename), exist_ok=True)
-
-    with open(filename, "w", encoding="UTF-8") as f:
-        print(output, file=f)
-
-
-def create_popup(path, cached=False):
-    html = ""
-    if cached:
-        print("Using saved table of contents...")
-        filename = os.path.join(path, "table_of_contents.html")
-        with open(filename, encoding="UTF-8") as f:
-            html = f.read()
-    else:
-        print("Downloading table of contents...")
-        html = download_table_of_contents(path)
+def create_chapters_json(path):
+    print("Downloading table of contents...")
+    html = download_table_of_contents(path)
     print("Parsing html...")
     volumes = parse_html(html)
-    print("Generating html...")
-    generate_html(volumes, path)
-    print("Popup generated!")
+    print("Generating json...")
+    filename = os.path.join(path, "chapters.json")
+
+    with open(filename, "w", encoding="UTF-8") as f:
+        json.dump(volumes, f)
+    print("Done!")
 
 
 if __name__ == "__main__":
-    create_popup("out", True)
+    create_chapters_json("")

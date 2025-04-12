@@ -16,6 +16,52 @@ function updateSelectedChapter(title, date_string) {
     }).then(r => console.log(r))
 }
 
+function load_chapters() {
+    let req = new XMLHttpRequest();
+    req.open("GET", "https://raw.githubusercontent.com/Uiniel/spoilerfree-twi-wiki/chapters.json");
+    req.responseType = "json";
+
+    req.onload = function () {
+        if (req.status === 200) {
+            const chapter_selection_elem = document.getElementsByClassName("chapter-selection")[0];
+
+            const volumes = req.response;
+            for (const volume in volumes) {
+                const volume_elem = document.createElement("details");
+
+                const volume_title_elem = document.createElement("summary");
+                volume_title_elem.innerText = volumes.title;
+                volume_elem.appendChild(volume_title_elem);
+
+                for (const chapter in volume.chapters) {
+                    const chapter_elem = document.createElement("label");
+                    chapter_elem.htmlFor = chapter.title;
+                    chapter_elem.className = "chapter";
+
+                    const input_elem = document.createElement("input");
+                    input_elem.type = "radio";
+                    input_elem.name = "chapter";
+                    input_elem.value = chapter.date;
+                    input_elem.id = chapter.title;
+                    chapter_elem.appendChild(input_elem);
+
+                    chapter_elem.appendChild(document.createTextNode(chapter.title));
+
+                    volume_elem.appendChild(chapter_elem);
+                }
+
+                chapter_selection_elem.appendChild(volume_elem);
+            }
+        }
+    };
+
+    req.onerror = function () {
+    };
+
+    req.send();
+}
+
+load_chapters();
 
 const selected = (await browser_common.storage.local.get("chapter")).chapter || "1.00";
 
