@@ -149,3 +149,11 @@ input:checked + .slider {
 #selected-date {
     user-select: text;
 }
+
+#update-chapters {
+    float: right;
+    color: white;
+    background: unset;
+    border: unset;
+    font-size: 14pt;
+}

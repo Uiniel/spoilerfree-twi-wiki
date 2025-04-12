@@ -24,6 +24,9 @@ function update_chapters() {
 
     req.onload = function () {
         if (req.status === 200) {
+            let chapter_selection_elem = document.getElementsByClassName("chapter-selection")[0];
+            chapter_selection_elem.innerHTML = "";
+
             browser_common.storage.local.set({"chapters_cache": req.response}).then(() => {
                 init().then(() => {});
             });
@@ -128,3 +131,4 @@ async function init() {
 }
 
 init();
+document.getElementById("update-chapters").addEventListener("click", () => update_chapters());
