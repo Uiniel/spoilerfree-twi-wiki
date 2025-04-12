@@ -13,49 +13,20 @@ function updateSelectedChapter(title, date_string) {
     browser_common.storage.local.set({
         "chapter": title,
         "date": date_string
-    }).then(r => console.log(r))
+    }).then(r => {})
 }
 
-function load_chapters() {
+function update_chapters() {
+    console.log("Updating chapters...");
     let req = new XMLHttpRequest();
     req.open("GET", "https://raw.githubusercontent.com/Uiniel/spoilerfree-twi-wiki/refs/heads/main/chapters.json");
     req.responseType = "json";
 
     req.onload = function () {
         if (req.status === 200) {
-            let chapter_selection_elem = document.getElementsByClassName("chapter-selection")[0];
-
-            const volumes = req.response;
-            console.log(volumes)
-            for (const volume of volumes) {
-                console.log(volume);
-                let volume_elem = document.createElement("details");
-
-                let volume_title_elem = document.createElement("summary");
-                volume_title_elem.innerText = volume.title;
-                volume_elem.appendChild(volume_title_elem);
-
-                for (const chapter of volume.chapters) {
-                    let chapter_elem = document.createElement("label");
-                    chapter_elem.htmlFor = chapter.title;
-                    chapter_elem.className = "chapter";
-
-                    let input_elem = document.createElement("input");
-                    input_elem.type = "radio";
-                    input_elem.name = "chapter";
-                    input_elem.value = chapter.date;
-                    input_elem.id = chapter.title;
-                    chapter_elem.appendChild(input_elem);
-
-                    chapter_elem.appendChild(document.createTextNode(chapter.title));
-
-                    volume_elem.appendChild(chapter_elem);
-                }
-
-                chapter_selection_elem.appendChild(volume_elem);
-            }
-
-            init();
+            browser_common.storage.local.set({"chapters_cache": req.response}).then(() => {
+                init().then(() => {});
+            });
         }
     };
 
@@ -65,9 +36,48 @@ function load_chapters() {
     req.send();
 }
 
-async function init() {
+function build_chapter_selection(volumes) {
+    let chapter_selection_elem = document.getElementsByClassName("chapter-selection")[0];
 
-    const selected = (await browser_common.storage.local.get("chapter")).chapter || "1.00";
+    for (const volume of volumes) {
+        let volume_elem = document.createElement("details");
+
+        let volume_title_elem = document.createElement("summary");
+        volume_title_elem.innerText = volume.title;
+        volume_elem.appendChild(volume_title_elem);
+
+        for (const chapter of volume.chapters) {
+            let chapter_elem = document.createElement("label");
+            chapter_elem.htmlFor = chapter.title;
+            chapter_elem.className = "chapter";
+
+            let input_elem = document.createElement("input");
+            input_elem.type = "radio";
+            input_elem.name = "chapter";
+            input_elem.value = chapter.date;
+            input_elem.id = chapter.title;
+            chapter_elem.appendChild(input_elem);
+
+            chapter_elem.appendChild(document.createTextNode(chapter.title));
+
+            volume_elem.appendChild(chapter_elem);
+        }
+
+        chapter_selection_elem.appendChild(volume_elem);
+    }
+}
+
+async function init() {
+    const local_storage = await browser_common.storage.local.get(null);
+
+    if (!local_storage.chapters_cache) {
+        update_chapters();
+        return;
+    }
+
+    build_chapter_selection(local_storage.chapters_cache);
+
+    const selected = local_storage.chapter || "1.00";
 
     const selected_elem = document.getElementById(selected);
     selected_elem.checked = true;
@@ -78,7 +88,7 @@ async function init() {
 
 
     const enabled_elem = document.getElementById("enabled");
-    enabled_elem.checked = (await browser_common.storage.local.get("enabled")).enabled || true;
+    enabled_elem.checked = local_storage.enabled || true;
 
     const form = document.getElementsByTagName("form")[0];
     form.addEventListener("change", (e) => {
@@ -109,4 +119,4 @@ async function init() {
     });
 }
 
-load_chapters();
+init();
