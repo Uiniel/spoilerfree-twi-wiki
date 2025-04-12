@@ -3,8 +3,12 @@ const targetPage = "https://wiki.wanderinginn.com/*";
 let currentChapterDate = new Date(2017, 3, 3);
 let enabled = true;
 browser.storage.local.get(["date", "enabled"]).then(data => {
-    currentChapterDate = new Date(data.date);
-    enabled = data.enabled;
+    if (data.date !== undefined) {
+        currentChapterDate = new Date(data.date);
+    }
+    if (data.enabled !== undefined) {
+        enabled = data.enabled;
+    }
 });
 
 browser.runtime.onMessage.addListener((message) => {

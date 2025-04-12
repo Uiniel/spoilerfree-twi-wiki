@@ -88,7 +88,15 @@ async function init() {
 
 
     const enabled_elem = document.getElementById("enabled");
-    enabled_elem.checked = local_storage.enabled || true;
+    if (local_storage.enabled === undefined) {
+        enabled_elem.checked = true;
+    } else {
+        enabled_elem.checked = local_storage.enabled;
+        if (!local_storage.enabled) {
+            const enabled_text = document.getElementById("enabled-text").children[0];
+            enabled_text.innerText = "Wiki Redirects Disabled";
+        }
+    }
 
     const form = document.getElementsByTagName("form")[0];
     form.addEventListener("change", (e) => {
